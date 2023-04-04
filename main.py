@@ -28,8 +28,8 @@ font = pygame.font.SysFont(None, 25)
 
 
 # Fonction pour dessiner le serpent
-def snake(block_size, snakeList, lead_x, lead_y):
-    for XnY in snakeList[:-1]:
+def snake(block_size, snake_list, lead_x, lead_y):
+    for XnY in snake_list[:-1]:
         pygame.draw.rect(gameDisplay, PURPLE, [XnY[0], XnY[1], block_size, block_size])
     pygame.draw.rect(gameDisplay, RED, [lead_x, lead_y, block_size, block_size])
 
