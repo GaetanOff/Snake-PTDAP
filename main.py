@@ -43,26 +43,30 @@ block_size = 50
 # Police
 font = pygame.font.SysFont(None, 25)
 
+# Création de la fenêtre
+gameDisplay = pygame.display.set_mode((800, 600))
+pygame.display.set_caption("GaetanDev • Snake")
 
+
+# Fonction pour dessiner la grille
 def drawGrid():
-    blockSize = 50  # Set the size of the grid block
-    for x in range(0, SCREEN_WIDTH, blockSize * 2):
-        for y in range(0, SCREEN_HEIGHT, blockSize * 2):
-            rect1 = pygame.Rect(x, y, blockSize, blockSize)
-            rect2 = pygame.Rect(x + blockSize, y + blockSize, blockSize, blockSize)
+    for x in range(0, SCREEN_WIDTH, block_size * 2):
+        for y in range(0, SCREEN_HEIGHT, block_size * 2):
+            rect1 = pygame.Rect(x, y, block_size, block_size)
+            rect2 = pygame.Rect(x + block_size, y + block_size, block_size, block_size)
             pygame.draw.rect(gameDisplay, GRID_GREEN_2, rect1)
             pygame.draw.rect(gameDisplay, GRID_GREEN_2, rect2)
 
 
 # Fonction pour dessiner le serpent
-def snake(block_size, snakeList, lead_x, lead_y, position):
+def snake(snake_list, lead_x, lead_y, position):
     snake_heads = {
         "up": pygame.transform.scale(HEAD_UP, (block_size, block_size)),
         "down": pygame.transform.scale(HEAD_DOWN, (block_size, block_size)),
         "left": pygame.transform.scale(HEAD_LEFT, (block_size, block_size)),
         "right": pygame.transform.scale(HEAD_RIGHT, (block_size, block_size))
     }
-    for XnY in snakeList[:-1]:
+    for XnY in snake_list[:-1]:
         pygame.draw.rect(gameDisplay, SNAKE_BLUE, [XnY[0], XnY[1], block_size, block_size])
 
     gameDisplay.blit(snake_heads[position], (lead_x, lead_y))
@@ -74,29 +78,25 @@ def message_to_screen(msg, color, x, y):
     gameDisplay.blit(screen_text, [x, y])
 
 
-gameDisplay = pygame.display.set_mode((800, 600))
-pygame.display.set_caption("GaetanDev • Snake")
-
-
 # Fonction principale pour le jeu
 def gameLoop():
     # Initialisation des variables
-    gameExit = False
-    gameOver = False
+    game_exit = False
+    game_over = False
 
     lead_x = SCREEN_WIDTH / 2
     lead_y = SCREEN_HEIGHT / 2
     lead_x_change = 0
     lead_y_change = 0
 
-    snakeList = []
-    snakeLength = 1
-    snakePosition = "up"
+    snake_list = []
+    snake_length = 1
+    snake_position = "up"
 
     score = 0
 
-    randAppleX = round(random.randrange(0, SCREEN_WIDTH - block_size) / block_size) * block_size
-    randAppleY = round(random.randrange(0, SCREEN_HEIGHT - block_size) / block_size) * block_size
+    rand_apple_x = round(random.randrange(0, SCREEN_WIDTH - block_size) / block_size) * block_size
+    rand_apple_y = round(random.randrange(0, SCREEN_HEIGHT - block_size) / block_size) * block_size
 
     start_ticks = pygame.time.get_ticks()
 
@@ -104,8 +104,8 @@ def gameLoop():
     AMBIANCE_SOUND.play(loops=-1)
 
     # Boucle principal
-    while not gameExit:
-        while gameOver:
+    while not game_exit:
+        while game_over:
 
             # Ecran de fin de jeu
             gameDisplay.fill(BLACK)
@@ -121,33 +121,33 @@ def gameLoop():
                         DEATH_SOUND.stop()
                         gameLoop()
                     if event.key == pygame.K_q:
-                        gameExit = True
-                        gameOver = False
+                        game_exit = True
+                        game_over = False
                 elif event.type == pygame.QUIT:
-                    gameExit = True
-                    gameOver = False
+                    game_exit = True
+                    game_over = False
 
         # Gestion des événements de jeu
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                gameExit = True
+                game_exit = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     lead_x_change = -block_size
                     lead_y_change = 0
-                    snakePosition = "left"
+                    snake_position = "left"
                 elif event.key == pygame.K_RIGHT:
                     lead_x_change = block_size
                     lead_y_change = 0
-                    snakePosition = "right"
+                    snake_position = "right"
                 elif event.key == pygame.K_DOWN:
                     lead_y_change = block_size
                     lead_x_change = 0
-                    snakePosition = "down"
+                    snake_position = "down"
                 elif event.key == pygame.K_UP:
                     lead_y_change = -block_size
                     lead_x_change = 0
-                    snakePosition = "up"
+                    snake_position = "up"
 
         # Changement de position du serpent
         lead_x += lead_x_change
@@ -157,7 +157,7 @@ def gameLoop():
         if lead_x >= SCREEN_WIDTH or lead_x < 0 or lead_y >= SCREEN_HEIGHT or lead_y < 0:
             AMBIANCE_SOUND.stop()
             pygame.mixer.Sound.play(DEATH_SOUND)
-            gameOver = True
+            game_over = True
 
         # Affichage de l'écran de jeu
         gameDisplay.fill(GRID_GREEN_1)
@@ -169,32 +169,32 @@ def gameLoop():
 
         # Affichage de la pomme
         apple_resized = pygame.transform.scale(APPLE, (block_size, block_size))
-        gameDisplay.blit(apple_resized, (randAppleX, randAppleY))
+        gameDisplay.blit(apple_resized, (rand_apple_x, rand_apple_y))
 
         # Ajout de la tête du serpent dans la liste
-        snakeHead = [lead_x, lead_y]
-        snakeList.append(snakeHead)
+        snake_head = [lead_x, lead_y]
+        snake_list.append(snake_head)
 
         # Si le serpent a dépassé la longueur maximum
-        if len(snakeList) > snakeLength:
-            del snakeList[0]
+        if len(snake_list) > snake_length:
+            del snake_list[0]
 
         # Vérification si le serpent se mord la queue
-        for eachSegment in snakeList[:-1]:
-            if eachSegment == snakeHead:
+        for eachSegment in snake_list[:-1]:
+            if eachSegment == snake_head:
                 AMBIANCE_SOUND.stop()
                 pygame.mixer.Sound.play(DEATH_SOUND)
-                gameOver = True
+                game_over = True
 
         # Affichage du serpent
-        snake(block_size, snakeList, lead_x, lead_y, snakePosition)
+        snake(snake_list, lead_x, lead_y, snake_position)
 
         # Vérification si le serpent a mangé la pomme
-        if lead_x == randAppleX and lead_y == randAppleY:
+        if lead_x == rand_apple_x and lead_y == rand_apple_y:
             pygame.mixer.Sound.play(EAT_SOUND)
-            randAppleX = round(random.randrange(0, SCREEN_WIDTH - block_size) / block_size) * block_size
-            randAppleY = round(random.randrange(0, SCREEN_HEIGHT - block_size) / block_size) * block_size
-            snakeLength += 1
+            rand_apple_x = round(random.randrange(0, SCREEN_WIDTH - block_size) / block_size) * block_size
+            rand_apple_y = round(random.randrange(0, SCREEN_HEIGHT - block_size) / block_size) * block_size
+            snake_length += 1
             score += 1
             message_to_screen(''.join(["Score: ", str(score)]), WHITE, 10, 10)
 
@@ -205,4 +205,5 @@ def gameLoop():
     pygame.quit()
 
 
-gameLoop()
+if __name__ == '__main__':
+    gameLoop()
