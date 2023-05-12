@@ -28,6 +28,8 @@ class Game:
         # Initialisation
         self.gameDisplay = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         pygame.display.set_caption("DreamTeam • Snake")
+
+        # Horloge
         self.clock = pygame.time.Clock()
 
         # Images et sons
