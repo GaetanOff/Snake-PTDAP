@@ -25,7 +25,7 @@ class Game:
         self.block_size = 50
         self.font = pygame.font.SysFont(None, 25)
 
-        # Initialisation
+        # Initialisation de la fenêtre
         self.gameDisplay = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         pygame.display.set_caption("DreamTeam • Snake")
 
