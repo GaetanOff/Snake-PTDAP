@@ -5,6 +5,8 @@ import pygame
 class Game:
     def __init__(self):
         pygame.init()
+
+        # Couleurs
         self.WHITE = (255, 255, 255)
         self.BLACK = (0, 0, 0)
         self.RED = (255, 0, 0)
@@ -15,14 +17,20 @@ class Game:
         self.GRID_GREEN_1 = (57, 181, 90)
         self.GRID_GREEN_2 = (30, 158, 64)
         self.SNAKE_BLUE = (27, 128, 183)
+
+        # Variables
         self.SCREEN_WIDTH = 800
         self.SCREEN_HEIGHT = 600
         self.fps = 8
         self.block_size = 50
         self.font = pygame.font.SysFont(None, 25)
+
+        # Initialisation
         self.gameDisplay = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         pygame.display.set_caption("DreamTeam • Snake")
         self.clock = pygame.time.Clock()
+
+        # Images et sons
         self.snake_heads = {
             "up": pygame.image.load("assets/img/up.png"),
             "down": pygame.image.load("assets/img/down.png"),
@@ -35,6 +43,7 @@ class Game:
         self.ambiance_sound = pygame.mixer.Sound("assets/sound/snakecharmer.mp3")
         self.start_ticks = pygame.time.get_ticks()
 
+    # Fonction pour déssiner la grille
     def drawGrid(self):
         for x in range(0, self.SCREEN_WIDTH, self.block_size * 2):
             for y in range(0, self.SCREEN_HEIGHT, self.block_size * 2):
@@ -43,6 +52,7 @@ class Game:
                 pygame.draw.rect(self.gameDisplay, self.GRID_GREEN_2, rect1)
                 pygame.draw.rect(self.gameDisplay, self.GRID_GREEN_2, rect2)
 
+    # Fonction pour déssiner le serpent
     def snake(self, snake_list, lead_x, lead_y, position):
         snake_heads = {
             "up": pygame.transform.scale(self.snake_heads['up'], (self.block_size, self.block_size)),
@@ -55,11 +65,15 @@ class Game:
 
         self.gameDisplay.blit(snake_heads[position], (lead_x, lead_y))
 
+    # Fonction pour afficher un message à l'écran
     def message_to_screen(self, msg, color, x, y):
         screen_text = self.font.render(msg, True, color)
         self.gameDisplay.blit(screen_text, [x, y])
 
+    # Fonction principale du jeu
     def gameLoop(self):
+
+        # Variables
         game_exit = False
         game_over = False
         lead_x = self.SCREEN_WIDTH / 2
@@ -78,6 +92,7 @@ class Game:
 
         start_ticks = pygame.time.get_ticks()
 
+        # Activer la musique d'ambiance
         self.ambiance_sound.set_volume(0.3)
         self.ambiance_sound.play(loops=-1)
 
@@ -163,7 +178,7 @@ class Game:
                     pygame.mixer.Sound.play(self.death_sound)
                     game_over = True
 
-                # Affichage du serpent
+            # Affichage du serpent
             self.snake(snake_list, lead_x, lead_y, snake_position)
 
             # Vérification si le serpent a mangé la pomme
