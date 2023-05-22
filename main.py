@@ -173,7 +173,7 @@ class Game:
             if len(snake_list) > snake_length:
                 del snake_list[0]
 
-                # Vérification si le serpent se mord la queue
+            # Vérification si le serpent se mord la queue
             for eachSegment in snake_list[:-1]:
                 if eachSegment == snake_head:
                     self.ambiance_sound.stop()
